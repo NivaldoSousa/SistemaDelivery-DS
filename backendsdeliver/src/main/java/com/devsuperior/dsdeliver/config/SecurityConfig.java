@@ -26,7 +26,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private Environment env;
 
     // essa configuraçao e para o gerenciamento do banco de dados de teste do H2,
-    // sem ela nao ha um bom funcionamento    @Override
+    // sem ela nao ha um bom funcionamento
+    @Override
     protected void configure(HttpSecurity http) throws Exception {
         if (Arrays.asList(env.getActiveProfiles()).contains("test")) {
             http.headers().frameOptions().disable();
