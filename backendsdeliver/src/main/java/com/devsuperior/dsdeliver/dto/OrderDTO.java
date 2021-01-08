@@ -1,20 +1,19 @@
-package com.devsuperior.dsdeliver.entities;
+package com.devsuperior.dsdeliver.dto;
 
-import javax.persistence.*;
+import com.devsuperior.dsdeliver.entities.Order;
+import com.devsuperior.dsdeliver.entities.OrderStatus;
+
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
-@Entity
-@Table(name = "tb_order")
-public class Order implements Serializable {
+public class OrderDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String address;
     private Double latitude;
@@ -22,24 +21,29 @@ public class Order implements Serializable {
     private Instant moment;
     private OrderStatus status;
 
-    //essa funçao faz com que nao haja repetição do mesmo produto no mesmo pedido
-    // e a funçao SET tem essa finalidade, nao aceita repetiçao,
-    // e tambem ele ja cria no banco a relaçao entre as entidade, de um para muitos (OneToMany).
-   @ManyToMany
-   @JoinTable(name = "tb_order_product",
-   joinColumns = @JoinColumn(name = "order_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
-    private Set<Product> products = new HashSet<>();
+    private List<ProductDTO> products = new ArrayList<>();
 
-    public Order(){
+    public OrderDTO(){
     }
 
-    public Order(Long id, String address, Double latitude, Double longitude, Instant moment, OrderStatus status) {
+    public OrderDTO(Long id, String address, Double latitude, Double longitude, Instant moment, OrderStatus status) {
         this.id = id;
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
         this.moment = moment;
         this.status = status;
+    }
+
+    public OrderDTO(Order entity) {
+        id = entity.getId();
+        address = entity.getAddress();
+        latitude = entity.getLatitude();
+        longitude = entity.getLongitude();
+        moment = entity.getMoment();
+        status = entity.getStatus();
+        products = entity.getProducts().stream()
+                .map(x -> new ProductDTO(x)).collect(Collectors.toList());
     }
 
     public Long getId() {
@@ -90,24 +94,9 @@ public class Order implements Serializable {
         this.status = status;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Order order = (Order) o;
-        return Objects.equals(id, order.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    public Set<Product> getProducts() {
+    public List<ProductDTO> getProducts() {
         return products;
     }
 
-    public void setProducts(Set<Product> products) {
-        this.products = products;
-    }
+
 }
