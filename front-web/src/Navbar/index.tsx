@@ -1,5 +1,5 @@
-import './styles.css'
-import { ReactComponent as Logo } from './Grouplogo.svg'
+import './styles.css';
+import { ReactComponent as Logo } from './Grouplogo.svg';
 
 function Navbar() {
     return (
